@@ -1,4 +1,4 @@
-package peaksoft.dto;
+package peaksoft.dto.dtoUser;
 
 import lombok.Builder;
 import peaksoft.dto.dtoUser.UserResponse;
