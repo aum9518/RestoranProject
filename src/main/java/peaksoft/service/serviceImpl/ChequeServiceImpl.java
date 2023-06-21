@@ -25,6 +25,7 @@ import peaksoft.service.ChequeService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -48,12 +49,23 @@ public class ChequeServiceImpl implements ChequeService {
     }
 
     @Override
-    public SimpleResponse saveCheque(Long userId, Long menuItemId) {
+    public SimpleResponse saveCheque(Long userId, ChequeRequest chequeRequest) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("User with id:%s is not found...", userId)));
-        MenuItem menuItem = menuItemRepository.findById(menuItemId).orElseThrow(() -> new NotFoundException(String.format("Item with id:%s is not found...", menuItemId)));
-        List<MenuItem> items = new ArrayList<>();
+//        MenuItem menuItem = menuItemRepository.findById(menuItemId).orElseThrow(() -> new NotFoundException(String.format("Item with id:%s is not found...", menuItemId)));
+       List <MenuItem> items = new ArrayList<>();
+        for (Long l: chequeRequest.menuItemId()) {
+            Optional<MenuItem> menuItem = menuItemRepository.findById(l);
+            MenuItem menuItem1 = new MenuItem();
+            menuItem1.setId(menuItem.get().getId());
+            menuItem1.setName(menuItem.get().getName());
+            menuItem1.setImage(menuItem.get().getImage());
+            menuItem1.setRestaurant(menuItem.get().getRestaurant());
+            menuItem1.setVegetarian(menuItem.get().isVegetarian());
+            menuItem1.setPrice(menuItem.get().getPrice());
+            items.add(menuItem1);
+
+        }
         int totalPrice = 0;
-        items.add(menuItem);
         for (MenuItem m:items) {
             totalPrice+=m.getPrice();
         }
@@ -72,7 +84,24 @@ public class ChequeServiceImpl implements ChequeService {
     @Override
     public SimpleResponse updateCheque(Long id, ChequeRequest chequeRequest) {
         Cheque cheque = repository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Cheque with id:%s is not present", id)));
-        cheque.setPriceAverage(chequeRequest.priceAverage());
+        List <MenuItem> items = new ArrayList<>();
+        for (Long l: chequeRequest.menuItemId()) {
+            Optional<MenuItem> menuItem = menuItemRepository.findById(l);
+            MenuItem menuItem1 = new MenuItem();
+            menuItem1.setId(menuItem.get().getId());
+            menuItem1.setName(menuItem.get().getName());
+            menuItem1.setImage(menuItem.get().getImage());
+            menuItem1.setRestaurant(menuItem.get().getRestaurant());
+            menuItem1.setVegetarian(menuItem.get().isVegetarian());
+            menuItem1.setPrice(menuItem.get().getPrice());
+            items.add(menuItem1);
+
+        }
+        int totalPrice = 0;
+        for (MenuItem m:items) {
+            totalPrice+=m.getPrice();
+        }
+        cheque.setPriceAverage(totalPrice);
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
                 .message("Successfully saved")

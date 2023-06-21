@@ -10,6 +10,7 @@ import peaksoft.dto.dtoCheque.ChequeResponse;
 import peaksoft.service.ChequeService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/cheque")
@@ -19,8 +20,8 @@ public class ChequeAPI {
 
     @PreAuthorize("hasAnyAuthority('ADMIN','WAITER')")
     @PostMapping("/save")
-    public SimpleResponse saveCheque(@RequestParam Long userId, @RequestParam Long menuItemId){
-        return service.saveCheque(userId, menuItemId);
+    public SimpleResponse saveCheque(@RequestParam Long userId, @RequestBody ChequeRequest chequeRequest){
+        return service.saveCheque(userId, chequeRequest);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

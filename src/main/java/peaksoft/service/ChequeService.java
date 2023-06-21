@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 public interface ChequeService {
     PaginationChequeResponse getAllCheques();
-    SimpleResponse saveCheque(Long userId,Long menuItemId);
+    SimpleResponse saveCheque(Long userId, ChequeRequest chequeRequest);
     SimpleResponse updateCheque(Long id, ChequeRequest chequeRequest);
     ChequeResponse getChequeById(Long id);
     SimpleResponse deleteCheque(Long id);
