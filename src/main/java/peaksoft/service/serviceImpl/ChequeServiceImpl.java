@@ -15,7 +15,6 @@ import peaksoft.entity.Cheque;
 import peaksoft.entity.MenuItem;
 import peaksoft.entity.Restaurant;
 import peaksoft.entity.User;
-import peaksoft.exceptions.BadRequestException;
 import peaksoft.exceptions.NotFoundException;
 import peaksoft.repository.ChequeRepository;
 import peaksoft.repository.MenuItemRepository;

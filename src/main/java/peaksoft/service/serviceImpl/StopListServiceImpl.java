@@ -44,8 +44,6 @@ public class StopListServiceImpl implements StopListService {
     public SimpleResponse saveStopList(Long menuItemId, StopListRequest stopListRequest) {
         MenuItem menuItem = menuItemRepository.findById(menuItemId).orElseThrow(() -> new NotFoundException(String.format("MenuItem with id:%s is not present", menuItemId)));
         List<StopList> all = repository.findAll();
-        boolean isFalse = false;
-        StopList stopList1 =new StopList();
         StopList stopList = new StopList();
 
         stopList.setReason(stopListRequest.reason());
@@ -60,17 +58,10 @@ public class StopListServiceImpl implements StopListService {
         }
         for (StopList list : all) {
 
-            if (list.getMenuItem().equals(menuItem) ) {
-                stopList1.setId(list.getId());
-                stopList1.setDate(list.getDate());
-                stopList1.setMenuItem(list.getMenuItem());
-                stopList1.setReason(list.getReason());
-
-            }
+            if (list.getMenuItem().equals(menuItem) && list.getDate().equals(stopListRequest.date()) ) {
+                throw new BadRequestException("MenuItem with this date already exist");
         }
-        if (stopList1.getDate().equals(stopListRequest.date())) {
-            throw new BadRequestException("MenuItem with this date already exist");
-        }
+    }
         repository.save(stopList);
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)

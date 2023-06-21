@@ -63,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @PostConstruct
     public  void init(){
-       // int count = userRepository.countAllUsers();
+        List<User> allUsers = restaurantRepository.getAllUsers();
         Restaurant restaurant = new Restaurant();
         User user = new User();
         List<User> users = new ArrayList<>();
@@ -73,7 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         restaurant.setLocation("Chuy 112");
         restaurant.setRestType("Koreiskiy");
         restaurant.setUsers(users);
-        restaurant.setNumberOfEmployees(restaurant.getUsers().size());
+        restaurant.setNumberOfEmployees(allUsers.size());
         if(!restaurantRepository.existsByName(restaurant.getName())){
             restaurantRepository.save(restaurant);
         }

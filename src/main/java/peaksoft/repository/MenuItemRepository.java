@@ -15,7 +15,7 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
     Page<MenuItemResponse> getAllMenuItemsDesc(@Param("ascDesc") String ascDesc, Pageable pageable);
 
     @Query("select new peaksoft.dto.dtoMenuItem.MenuItemResponse(m.id,m.name,m.image,m.price,m.description,m.isVegetarian) from MenuItem m " +
-            "where m.name ilike concat(:word,'%') or m.name ilike concat('%',:word,'%') ")
+            "join m.subCategory s join s.category c where m.name ilike concat(:word,'%') or m.name ilike concat('%',:word,'%') or s.name ilike concat('%',:word,'%') or c.name ilike concat('%',:word,'%')")
     Page<MenuItemResponse> search(@Param("word") String word, Pageable pageable);
 
     @Query("select new peaksoft.dto.dtoMenuItem.MenuItemResponse(m.id,m.name,m.image,m.price,m.description,m.isVegetarian) from MenuItem m " +

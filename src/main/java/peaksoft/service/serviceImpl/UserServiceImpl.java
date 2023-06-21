@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setFirstName(userRequest.firstName());
         user.setLastName(userRequest.lastName());
-//        user.setDateOfBirth(userRequest.dateOfBirth());
         int age = Period.between(userRequest.dateOfBirth(), LocalDate.now()).getYears();
         if (userRequest.role().equals(Role.CHEF)){
             if (age>=25 && age<=45){
@@ -209,24 +208,23 @@ if (restaurant.getUsers().size()<=15){
         User user = new User();
         user.setFirstName(userRequest.firstName());
         user.setLastName(userRequest.lastName());
-        user.setDateOfBirth(userRequest.dateOfBirth());
-        user.setRestaurant(restaurant);
+        int age = Period.between(userRequest.dateOfBirth(), LocalDate.now()).getYears();
+        if (userRequest.role().equals(Role.CHEF)){
+            if (age>=25 && age<=45){
+                user.setDateOfBirth(userRequest.dateOfBirth());
+            } else throw new BadCredentialException("You can not apply for this job because of your age...");
 
-//        if (userRequest.role().equals(Role.CHEF)){
-//            if (userRequest.dateOfBirth().getYear()>=25 && userRequest.dateOfBirth().getYear()<=45){
-//                user.setDateOfBirth(userRequest.dateOfBirth());
-//            } else throw new BadCredentialException("You can not apply for this job because of your age...");
-//
-//        }else if (userRequest.role().equals(Role.WAITER)){
-//            if (userRequest.dateOfBirth().getYear()<30 && userRequest.dateOfBirth().getYear()>18){
-//                user.setDateOfBirth(userRequest.dateOfBirth());
-//
-//            }else throw new BadRequestException("You can not apply for this job because your age...");
-//        }
+        }else if (userRequest.role().equals(Role.WAITER)){
+            if (age<30 && age>18){
+                user.setDateOfBirth(userRequest.dateOfBirth());
+
+            }else throw new BadRequestException("You can not apply for this job because your age...");
+        }
         user.setEmail(userRequest.email());
         user.setPassword(passwordEncoder.encode(userRequest.password()));
         user.setPhoneNumber(userRequest.phoneNumber());
         user.setRole(userRequest.role());
+        user.setRestaurant(restaurant);
         if (userRequest.role().equals(Role.CHEF)) {
             if (userRequest.experience() >= 2) {
                 user.setExperience(userRequest.experience());
@@ -236,11 +234,14 @@ if (restaurant.getUsers().size()<=15){
                 user.setExperience(userRequest.experience());
             } else throw new BadRequestException("Your experience does not enough for waiter vocation");
         }
-        restaurant.getUsers().add(user);
-        repository.save(user);
+
+        if (restaurant.getUsers().size()<=15){
+            repository.save(user);
+        }else throw new BadCredentialException("There is no more vocation!");
+
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
-                .message("You successfully applied for the job...")
+                .message(String.format("You successfully applied for the job..."+restaurant.getUsers().size()))
                 .build();
     }
 

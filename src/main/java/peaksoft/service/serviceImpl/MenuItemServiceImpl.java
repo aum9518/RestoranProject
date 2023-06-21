@@ -13,12 +13,17 @@ import peaksoft.dto.dtoMenuItem.MenuItemResponse;
 import peaksoft.dto.dtoMenuItem.PaginationMenuItemResponse;
 import peaksoft.entity.MenuItem;
 import peaksoft.entity.Restaurant;
+import peaksoft.entity.StopList;
 import peaksoft.entity.SubCategory;
 import peaksoft.exceptions.NoSuchElementException;
 import peaksoft.repository.MenuItemRepository;
 import peaksoft.repository.RestaurantRepository;
+import peaksoft.repository.StopListRepository;
 import peaksoft.repository.SubCategoryRepository;
 import peaksoft.service.MenuItemService;
+
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,6 +31,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     private final MenuItemRepository repository;
     private final RestaurantRepository restaurantRepository;
     private final SubCategoryRepository subCategoryRepository;
+    private final StopListRepository stopListRepository;
 
     @Override
     public PaginationMenuItemResponse getAllMenuItems(String ascDesc, int currentPage, int pageSize) {
@@ -86,6 +92,14 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     public MenuItemResponse getMenuItemById(Long id) {
         MenuItem menuItem = repository.findById(id).orElseThrow(() -> new NoSuchElementException(String.format("MenuItem with id:%s does not exist", id)));
+        List<StopList> all = stopListRepository.findAll();
+        for (StopList s: all) {
+            if (s.getMenuItem().equals(menuItem)){
+                return MenuItemResponse.builder()
+                        .name("This menuItem temporarily no available")
+                        .build();
+            }
+        }
         return MenuItemResponse.builder()
                 .id(menuItem.getId())
                 .name(menuItem.getName())
