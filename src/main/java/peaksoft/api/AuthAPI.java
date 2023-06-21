@@ -22,7 +22,7 @@ public class AuthAPI {
    }
 
    @GetMapping("/signIn")
-   public AuthenticationResponse signIn(@RequestBody  SignInRequest signInRequest){
+   public AuthenticationResponse signIn(@RequestBody SignInRequest signInRequest){
         return authenticationService.signIn(signInRequest);
    }
 }

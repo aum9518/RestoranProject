@@ -10,7 +10,7 @@ import peaksoft.entity.SubCategory;
 
 public interface SubCategoryRepository extends JpaRepository<SubCategory, Long> {
 
-    @Query("select new peaksoft.dto.dtoSubcategory.SubCategoryResponse(s.id,s.name) from SubCategory  s ")
+    @Query("select new peaksoft.dto.dtoSubcategory.SubCategoryResponse(s.id,s.name,s.category.name) from SubCategory  s ")
     Page<SubCategoryResponse> getAllSubCategories(Pageable pageable);
 
     @Query("select new peaksoft.dto.dtoSubcategory.SubCategoryResponse(s.id,s.name) from SubCategory  s where s.category.name=:word order by s.name asc")

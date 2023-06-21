@@ -52,24 +52,29 @@ public class ChequeServiceImpl implements ChequeService {
     public SimpleResponse saveCheque(Long userId, ChequeRequest chequeRequest) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("User with id:%s is not found...", userId)));
 //        MenuItem menuItem = menuItemRepository.findById(menuItemId).orElseThrow(() -> new NotFoundException(String.format("Item with id:%s is not found...", menuItemId)));
+        Cheque cheque= new Cheque();
+        List<Cheque> cheques = new ArrayList<>();
+        cheques.add(cheque);
        List <MenuItem> items = new ArrayList<>();
         for (Long l: chequeRequest.menuItemId()) {
-            Optional<MenuItem> menuItem = menuItemRepository.findById(l);
-            MenuItem menuItem1 = new MenuItem();
-            menuItem1.setId(menuItem.get().getId());
-            menuItem1.setName(menuItem.get().getName());
-            menuItem1.setImage(menuItem.get().getImage());
-            menuItem1.setRestaurant(menuItem.get().getRestaurant());
-            menuItem1.setVegetarian(menuItem.get().isVegetarian());
-            menuItem1.setPrice(menuItem.get().getPrice());
-            items.add(menuItem1);
+            MenuItem menuItem = menuItemRepository.findById(l).orElseThrow(() -> new NotFoundException(String.format("Item with id:%s is not found...", l)));
+//            MenuItem menuItem1 = new MenuItem();
+//            menuItem1.setId(menuItem.get().getId());
+//            menuItem1.setName(menuItem.get().getName());
+//            menuItem1.setImage(menuItem.get().getImage());
+//            menuItem1.setRestaurant(menuItem.get().getRestaurant());
+//            menuItem1.setVegetarian(menuItem.get().isVegetarian());
+//            menuItem1.setPrice(menuItem.get().getPrice());
+//
+            menuItem.setCheques(cheques);
+            items.add(menuItem);
 
         }
         int totalPrice = 0;
         for (MenuItem m:items) {
             totalPrice+=m.getPrice();
         }
-        Cheque cheque= new Cheque();
+
         cheque.setUser(user);
         cheque.setCreatedAt(LocalDate.now());
         cheque.setMenuItems(items);
