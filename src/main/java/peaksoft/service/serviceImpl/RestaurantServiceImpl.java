@@ -7,22 +7,26 @@ import org.springframework.stereotype.Service;
 import peaksoft.dto.SimpleResponse;
 import peaksoft.dto.dtoRestaurant.RestaurantRequest;
 import peaksoft.dto.dtoRestaurant.RestaurantResponse;
+import peaksoft.entity.MenuItem;
 import peaksoft.entity.Restaurant;
 import peaksoft.entity.User;
 import peaksoft.exceptions.BadRequestException;
 import peaksoft.exceptions.NotFoundException;
-import peaksoft.repository.RestaurantRepository;
-import peaksoft.repository.UserRepository;
+import peaksoft.repository.*;
 import peaksoft.service.RestaurantService;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantRepository repository;
     private final UserRepository userRepository;
+    private final MenuItemRepository menuItemRepository;
+    private final StopListRepository stopListRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public List<RestaurantRequest> getAllRestaurant() {
@@ -77,12 +81,23 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public SimpleResponse deleteRestaurant(Long id) {
-        if (repository.existsById(id)){
+        if (repository.existsById(id)) {
+            Restaurant restaurant = repository.findById(id).orElseThrow(() -> new NotFoundException("restaurant with id is not found"));
+//            List<MenuItem> all = menuItemRepository.findAll();
+//            for (MenuItem a:all) {
+//                a.setStopList(null);
+//                a.getStopList().setMenuItem(null);
+//            }
+//            restaurant.getMenuItems().clear();
+            categoryRepository.deleteAll();
+//            menuItemRepository.deleteAll();
+//            stopListRepository.deleteAll();
             repository.deleteById(id);
+
             return SimpleResponse.builder()
                     .httpStatus(HttpStatus.OK)
                     .message("Successfully deleted")
                     .build();
-        }else throw new BadRequestException("Restaurant with id is not found");
+        } else throw new BadRequestException("Restaurant with id is not found");
     }
 }

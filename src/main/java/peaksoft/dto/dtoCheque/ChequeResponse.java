@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 public record ChequeResponse(Long id,
                              String waiterFullName,
-                             List<MenuItem> items,
+                             List<String> items,
                              int priceAverage,
                              int service,
                              int grandTotal) {

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,7 @@ import peaksoft.repository.RestaurantRepository;
 import peaksoft.repository.UserRepository;
 import peaksoft.service.UserService;
 
+import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final RestaurantRepository restaurantRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JdbcTemplate jdbcTamplete;
         int counter = 0;
     private User getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,6 +51,7 @@ public class UserServiceImpl implements UserService {
     public PaginationResponse getAllUsers(int currentPage, int pageSize) {
         Pageable pageable = PageRequest.of(currentPage - 1, pageSize);
         Page<UserResponse> allUsers = repository.getAllUsers(pageable);
+
         return PaginationResponse.builder()
                 .userResponseList(allUsers.getContent())
                 .page(allUsers.getNumber() + 1)
@@ -170,7 +174,6 @@ if (restaurant.getUsers().size()<=15){
     public UserResponse getUserById(Long id) {
         User user1 = getAuthentication();
         User user = repository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " is not found!"));
-
         if (user1.getRole().equals(Role.ADMIN)) {
             return UserResponse.builder()
                     .id(user.getId())

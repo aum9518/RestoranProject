@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+
 @Entity
 @Table(name = "stopLists")
 @Getter

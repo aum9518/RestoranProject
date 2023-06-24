@@ -23,6 +23,6 @@ public class Cheque {
     private LocalDate createdAt;
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     private User user;
-    @ManyToMany(mappedBy = "cheques",cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @ManyToMany(mappedBy = "cheques",cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH,CascadeType.REMOVE})
     private List<MenuItem> menuItems;
 }

@@ -20,6 +20,6 @@ public class  SubCategory {
     private String name;
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     private Category category;
-    @OneToMany(mappedBy = "subCategory")
+    @OneToMany(mappedBy = "subCategory",cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH,CascadeType.REMOVE})
     private List<MenuItem> menuItems;
 }

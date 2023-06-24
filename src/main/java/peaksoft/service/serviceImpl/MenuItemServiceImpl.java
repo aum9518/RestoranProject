@@ -22,6 +22,7 @@ import peaksoft.repository.StopListRepository;
 import peaksoft.repository.SubCategoryRepository;
 import peaksoft.service.MenuItemService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -94,7 +95,7 @@ public class MenuItemServiceImpl implements MenuItemService {
         MenuItem menuItem = repository.findById(id).orElseThrow(() -> new NoSuchElementException(String.format("MenuItem with id:%s does not exist", id)));
         List<StopList> all = stopListRepository.findAll();
         for (StopList s: all) {
-            if (s.getMenuItem().equals(menuItem)){
+            if (s.getMenuItem().equals(menuItem) && s.getDate().equals(LocalDate.now())){
                 return MenuItemResponse.builder()
                         .name("This menuItem temporarily no available")
                         .build();

@@ -45,7 +45,6 @@ public class StopListServiceImpl implements StopListService {
         MenuItem menuItem = menuItemRepository.findById(menuItemId).orElseThrow(() -> new NotFoundException(String.format("MenuItem with id:%s is not present", menuItemId)));
         List<StopList> all = repository.findAll();
         StopList stopList = new StopList();
-
         stopList.setReason(stopListRequest.reason());
         stopList.setDate(stopListRequest.date());
         stopList.setMenuItem(menuItem);
